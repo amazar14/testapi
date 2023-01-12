@@ -10,7 +10,7 @@ export class AppController {
   @Get('test')
   getHello(@Res() response, @Req() request) {
     // res.status(res.status(HttpStatus.OK))
-    response.status(200).send(request.host)
+    response.status(200).send(request.host+"__")
     // return this.appService.getHello(request.query);
   }
 
