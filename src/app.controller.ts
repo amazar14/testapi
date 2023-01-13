@@ -1,16 +1,21 @@
-import { Controller, Get, Post, Req, HttpCode, Header, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Req, HttpCode, Header, Res, HttpStatus, createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { AppService } from './app.service';
-import { Request } from 'express';
-import { getHeapCodeStatistics } from 'v8';
-console.log(HttpStatus)
+import * as requestIp from "request-ip";
+
+const IpAddress = createParamDecorator(
+  (data, ctx)=>{
+  const req = ctx.switchToHttp().getRequest()
+  if(req.clientIp) return req.clientIp;
+  return requestIp.getClientIp(req)
+})
 @Controller('common')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get('test')
-  getHello(@Res() response, @Req() request) {
+  getHello(@Res() response, @Req() request, @IpAddress() clientIp) {
     // res.status(res.status(HttpStatus.OK))
-    response.status(200).send(request.host+"__")
+    response.status(200).send(clientIp.split("ffff:")[1])
     // return this.appService.getHello(request.query);
   }
 
